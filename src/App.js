@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Posts />} />
           <Route path="/inquiry" element={<Inquiry />} />
-          <Route path="/page/:id" element={<Page />} />
+          <Route path="/posts/:id" element={<Page />} />
         </Routes>
       </main>
     </>

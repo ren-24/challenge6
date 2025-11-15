@@ -8,7 +8,7 @@ function Posts() {
     <div className={classes.container}>
       {posts.map(elem => (
         <React.Fragment key={elem.id}>
-          <Link to={`/page/${elem.id}`}>
+          <Link to={`/posts/${elem.id}`}>
             <li className={classes.box}>
               <div className={classes.flex}>
                 <div className={classes.date}>{elem.createdAt}</div>
