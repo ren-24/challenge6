@@ -1,33 +1,42 @@
-import React from "react";
-import { posts } from "./data/posts";
+import React, { useEffect, useState } from "react";
 import classes from "./Home.module.css";
 import { useParams } from "react-router-dom";
 
 export default function Page() {
 
   const { id } = useParams();
-  const elem = posts.find(post => post.id === Number(id));
+  const [post, setPost] = useState(null);
 
-  if (!elem) {
+  useEffect(() => {
+    const fetcher = async () => {
+      const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`)
+      const { post } = await res.json();
+      setPost(post);
+    }
+
+    fetcher()
+  }, [id]);
+
+  if (!post) {
     return <div>記事が見つかりません</div>;
   }
 
-   return (
-    <React.Fragment key={elem.id}>
+  return (
+    <React.Fragment key={post.id}>
       <div>
-        <img className={classes.img} src={elem.thumbnailUrl} alt={elem.title} />
+        <img className={classes.img} src={post.thumbnailUrl} alt="" />
         <div className={classes.flex}>
-          <div className={classes.date}>{elem.createdAt}</div>
+          <div className={classes.date}>{post.createdAt}</div>
           <div>
-            {elem.categories.map(category => (
+            {post.categories.map(category => (
               <span key={category} className={classes.category}>{category}</span>
             ))}
           </div>
         </div>
-        <div className={classes.title}>APIで取得した{elem.title}</div>
+        <div className={classes.title}>{post.title}</div>
         <div
           className={classes.content}
-          dangerouslySetInnerHTML={{ __html: elem.content }}
+          dangerouslySetInnerHTML={{ __html: post.content }}
         ></div>
       </div>
     </React.Fragment>
