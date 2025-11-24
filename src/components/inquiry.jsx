@@ -26,7 +26,6 @@ const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     const newErrors = {};
 
@@ -45,66 +44,72 @@ const Form = () => {
       setIsSubmitting(false);
       return;
     }
+    setIsSubmitting(true);
 
-    const res = await fetch(
-      "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
-      });
-    setIsSubmitting(false);
+    try {
+      const res = await fetch(
+        "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
+      const data = await res.json();
+      alert("送信しました。", data);
 
-    const data = await res.json();
-    alert("送信しました。", data);
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      alert("送信に失敗しました。");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
-    setForm({ name: "", email: "", message: "" });
-  };
+return (
+  <div>
+    <h1 className="title">問合わせフォーム</h1>
 
-  return (
-    <div>
-      <h1 className="title">問合わせフォーム</h1>
-
-      {errors.name && <p className="errorMessage">{errors.name}</p>}
-      <div className="name">お名前
-        <input
-          className="name_box"
-          type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      {errors.email && <p className="errorMessage">{errors.email}</p>}
-      <div className="email">メールアドレス
-        <input
-          className="email_box"
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      {errors.message && <p className="errorMessage">{errors.message}</p>}
-      <div className="message">本文
-        <textarea
-          className="message_box"
-          name="message"
-          value={form.message}
-          onChange={handleChange}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      <div className="buttons">
-        <button className="submit" type="submit" onClick={handleSubmit}>送信</button>
-        <button className="clear" type="button" onClick={() => setForm({ name: "", email: "", message: "" })}>クリア</button>
-      </div>
+    {errors.name && <p className="errorMessage">{errors.name}</p>}
+    <div className="name">お名前
+      <input
+        className="name_box"
+        type="text"
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        disabled={isSubmitting}
+      />
     </div>
-  );
+
+    {errors.email && <p className="errorMessage">{errors.email}</p>}
+    <div className="email">メールアドレス
+      <input
+        className="email_box"
+        type="email"
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        disabled={isSubmitting}
+      />
+    </div>
+
+    {errors.message && <p className="errorMessage">{errors.message}</p>}
+    <div className="message">本文
+      <textarea
+        className="message_box"
+        name="message"
+        value={form.message}
+        onChange={handleChange}
+        disabled={isSubmitting}
+      />
+    </div>
+
+    <div className="buttons">
+      <button className="submit" type="submit" onClick={handleSubmit} disabled={isSubmitting}>送信</button>
+      <button className="clear" type="button" onClick={() => setForm({ name: "", email: "", message: "" })} disabled={isSubmitting}>クリア</button>
+    </div>
+  </div>
+);
 }
 export default Form;
